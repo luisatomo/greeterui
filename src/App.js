@@ -1,25 +1,40 @@
+import React, {Component} from 'react';
 import logo from './logo.svg';
 import './App.css';
+import { greeterContract, greet } from './EthereumSetup';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends React.Component {
+
+  state = {
+    greeting: ""
+  }
+
+  async componentDidMount() {
+    this._asyncRequest = greeterContract().then(
+      externalData => {
+        this._asyncRequest = null;
+        console.log(externalData)
+        greet(externalData).then(greet => {
+          this.setState({
+            greeting: greet
+          });
+        })
+        
+      }
+    );
+    
+  }
+
+  render() {
+      return (
+      <div className="App">
+        <header className="App-header">
+          <img src={logo} className="App-logo" alt="logo" />
+          {this.state.greeting}
+        </header>
+      </div>
+    );
+  }
 }
 
 export default App;
